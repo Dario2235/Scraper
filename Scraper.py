@@ -29,12 +29,12 @@ def scraper(site, user, userloc, logpath):
             print text
             unitext = unidecode(text)
             domain = site.split("://")
-            print domain[1]
-            print
-            f = open(str(domain[1] + ".txt"), "w+")
+            tld = str(domain[1])
+            tld = tld.replace("/", "-")
+            f = open(str(tld + ".txt"), "w+")
             f.write(unitext)
             f.close()
-            hex_dig = get_hashes(domain[1] + ".txt")
+            hex_dig = get_hashes(tld + ".txt")
             Logging.log(user, userloc, when, what, why, result, hex_dig, logpath)
             return(unitext, hex_dig)
 
