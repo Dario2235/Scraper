@@ -11,6 +11,7 @@ from bs4 import BeautifulSoup
 import hashlib
 import ExceptionHandling
 import Logging
+import Scp
 from unidecode import unidecode
 
 
@@ -34,7 +35,9 @@ def scraper(site, user, userloc, logpath):
             f = open(str(tld + ".txt"), "w+")
             f.write(unitext)
             f.close()
-            hex_dig = get_hashes(tld + ".txt")
+            filename = tld + ".txt"
+            hex_dig = get_hashes(filename)
+            Scp.run(filename)
             Logging.log(user, userloc, when, what, why, result, hex_dig, logpath)
             return(unitext, hex_dig)
 
@@ -57,3 +60,4 @@ def get_hashes(file):
             sha256.update(block)
     hash = sha256.hexdigest()
     return hash
+

@@ -22,6 +22,7 @@ class Menu:
         self.userloc = ""
         self.logpath = ""
 
+
     def show_menu(self):
         """
         prints out the menu
