@@ -2,19 +2,21 @@
 #
 #
 #
-# Author: Dario Weeink
+# Author: Dario
 #
 
 import time
 
 def log(user_name, user_loc, time, what, why, result, hash, logpath):
     """
-    Logs information to a file corresponding with the image number i.e. log_1.txt
     :param user_name: name of the user currently using the program
     :param user_loc: location of the user currently using the program
-    :param module_name: name of the module where the log comes from
-    :param imgnr: number of the image as stated in the database
-    :param log_body: Content of the log message
+    :param time: timestamp of this moment.
+    :param what: explanation of what the tool is doing.
+    :param why: explanation of why it's doing it.
+    :param result: The result of te actions.
+    :param hash: Hash value of the new file.
+    :param logpath: The path to the logfile.
     :return: nothing
     """
 
