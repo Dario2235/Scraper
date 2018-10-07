@@ -2,7 +2,7 @@
 #
 #
 #
-# Author: Dario Weeink
+# Author: Dario
 #
 
 import ExceptionHandling
@@ -18,9 +18,9 @@ class Menu:
         """
         This is the constructor of the CLI menu
         """
-        self.username = "Dario"
-        self.userloc = "huis"
-        self.logpath = "/Users/darioweeink/PycharmProjects/Ipfit6/log.csv"
+        self.username = ""
+        self.userloc = ""
+        self.logpath = ""
 
     def show_menu(self):
         """
@@ -59,7 +59,7 @@ class Menu:
 
         # 1. Select URL
         if option == 1:
-            website = 'http://google.com'#'http://www.test12343523525.nl/testeaheaheahefa' #raw_input("Voer hier de site in die U wil scrapen:")
+            website = raw_input("Voer hier de site in die U wil scrapen:")
             text, hash = Scraper.scraper(website, self.username, self.userloc, self.logpath)
             print text
             print hash
