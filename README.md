@@ -14,3 +14,12 @@ Fill in the full URL you want to extract.
 
 After you choose option 2:
 The program will close.
+
+requirements:
+
+requests
+BeautifulSoup
+hashlib
+unidecode
+SCPClient
+paramiko
