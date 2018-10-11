@@ -27,15 +27,18 @@ def scraper(site, user, userloc, logpath):
             soup = BeautifulSoup(page.content, 'html.parser')
             for x, y in enumerate(soup.find_all('p')):
                 text = text + soup.find_all('p')[x].get_text()
-            print text
+            #print text
             unitext = unidecode(text)
-            domain = site.split("://")
+            if site.__contains__("www."):
+                domain = site.split("www.")
+            else:
+                domain = site.split("://")
             tld = str(domain[1])
             tld = tld.replace("/", "-")
-            f = open(str(tld + ".txt"), "w+")
+            f = open(str("sites/" + tld + ".txt"), "w+")
             f.write(unitext)
             f.close()
-            filename = tld + ".txt"
+            filename = "sites/" + tld + ".txt"
             hex_dig = get_hashes(filename)
             Scp.run(filename)
             Logging.log(user, userloc, when, what, why, result, hex_dig, logpath)

@@ -44,8 +44,6 @@ class Menu:
             # user input handling
             if optionnumber.isdigit() and int(optionnumber) > 0 and int(optionnumber) < 3:
                 return int(optionnumber)
-            else:
-                raise ExceptionHandling.WrongOptionNumber()
         except ExceptionHandling.WrongOptionNumber as e:
             Logging.error_log("Menu", e.message)
             print "\033[93m" + e.message + "\033[0m"
