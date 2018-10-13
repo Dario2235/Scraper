@@ -8,6 +8,7 @@
 import ExceptionHandling
 import Logging
 import Scraper
+import Buster
 
 class Menu:
     """
@@ -36,13 +37,15 @@ class Menu:
         # limit this options if no image is set
 
         print "1. Scrape website"
-        print "2. Exit"
+        print "2. Run scraper on gobuster output."
+        print "3. Voer bestand met href's in."
+        print "4. exit"
 
         print ""
         try:
             optionnumber = raw_input("Choose an option number: ")
             # user input handling
-            if optionnumber.isdigit() and int(optionnumber) > 0 and int(optionnumber) < 3:
+            if optionnumber.isdigit() and int(optionnumber) > 0 and int(optionnumber) < 5:
                 return int(optionnumber)
         except ExceptionHandling.WrongOptionNumber as e:
             Logging.error_log("Menu", e.message)
@@ -59,10 +62,16 @@ class Menu:
         # 1. Select URL
         if option == 1:
             website = raw_input("Voer hier de site in die U wil scrapen:")
-            text, hash = Scraper.scraper(website, self.username, self.userloc, self.logpath)
-            print text
-            print hash
-
+            Scraper.scraper(website, self.username, self.userloc, self.logpath, '0')
+        if option == 2:
+            txtfile = raw_input("Voer hier de locatie van het .txt bestand in.")
+            Buster.readfile(txtfile, self.username, self.userloc, self.logpath, '0')
+        if option == 3:
+            print "Het bestand moet de volgende naamgeving hebben: Domeinnaam  - tld  - iets .txt voorbeeld nu.nl.test.txt"
+            txtfile = raw_input("Voer hier de locatie van het .txt bestand in.")
+            Buster.readfile(txtfile, self.username, self.userloc, self.logpath, '1')
+        if option == 4:
+            exit()
 
 def __main__():
     """
@@ -71,7 +80,7 @@ def __main__():
     """
     option = 0
     menu = Menu()
-    while option != 2:
+    while option != 4:
         option = menu.show_menu()
         menu.choose_option(option)
 

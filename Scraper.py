@@ -12,21 +12,24 @@ import hashlib
 import ExceptionHandling
 import Logging
 import Scp
+import hrefParser
 from PyPDF2 import PdfFileReader
 import urllib
 from unidecode import unidecode
 
 
-def scraper(site, user, userloc, logpath):
+def scraper(site, user, userloc, logpath, hrefCheck):
     text = ""
+    href = []
     what = str(site + " scrapen.")
     when = time.strftime("%d/%m/%Y" + " " + "%H:%M:%S")
     why = "Extract text from the site for research."
     result = str(site + " gescraped. .txt file has been made with the content of the original site.")
+    if str(site).endswith("\n"):
+        site = site[:-2]
     try:
         print site
         if site.__contains__(".pdf"):
-
             if site.__contains__("www."):
                 domain = site.split("www.")
             else:
@@ -34,18 +37,21 @@ def scraper(site, user, userloc, logpath):
             tld = str(domain[1])
             tld = tld.replace("/", "-")
             filename = "sites/" + tld
-            pdffile = download_file(site, filename)
+            download_file(site, filename)
             hex_dig = get_hashes(filename)
             Scp.run(filename)
             Logging.log(user, userloc, when, what, why, result, hex_dig, logpath)
             return(filename, hex_dig)
 
         else:
+            print site
             page = requests.get(site)
             if page.status_code == 200:
                 soup = BeautifulSoup(page.content, 'html.parser')
                 for x, y in enumerate(soup.find_all('p')):
                     text = text + soup.find_all('p')[x].get_text()
+                for x, y in enumerate(soup.find_all('a')):
+                    href.append(soup.find_all('a')[x].get_text())
 
                 unitext = unidecode(text)
                 if site.__contains__("www."):
@@ -61,7 +67,10 @@ def scraper(site, user, userloc, logpath):
                 hex_dig = get_hashes(filename)
                 Scp.run(filename)
                 Logging.log(user, userloc, when, what, why, result, hex_dig, logpath)
-                return(unitext, hex_dig)
+                if hrefCheck == 0:
+                    hrefParser(href, str(domain[1]))
+                print hex_dig
+                return
 
     except ExceptionHandling.WrongStatusCode as e:
         Logging.error_log("Menu", e.message)
