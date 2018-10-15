@@ -19,9 +19,9 @@ class Menu:
         """
         This is the constructor of the CLI menu
         """
-        self.username = ""
-        self.userloc = ""
-        self.logpath = ""
+        self.username = "dario"
+        self.userloc = "huis"
+        self.logpath = "log1.csv"
 
 
     def show_menu(self):
@@ -63,13 +63,19 @@ class Menu:
         if option == 1:
             website = raw_input("Voer hier de site in die U wil scrapen:")
             Scraper.scraper(website, self.username, self.userloc, self.logpath, '0')
+
+        # Voer text bestand in met de output van gobuster
         if option == 2:
             txtfile = raw_input("Voer hier de locatie van het .txt bestand in.")
             Buster.readfile(txtfile, self.username, self.userloc, self.logpath, '0')
+
+        # Voer text bestand in met aangemaakte href bestand.
         if option == 3:
             print "Het bestand moet de volgende naamgeving hebben: Domeinnaam  - tld  - iets .txt voorbeeld nu.nl.test.txt"
             txtfile = raw_input("Voer hier de locatie van het .txt bestand in.")
             Buster.readfile(txtfile, self.username, self.userloc, self.logpath, '1')
+
+        # Verlaat het programma
         if option == 4:
             exit()
 

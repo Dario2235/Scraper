@@ -30,6 +30,8 @@ def scraper(site, user, userloc, logpath, hrefCheck):
     try:
         print site
         if site.__contains__(".pdf"):
+
+            #Download pdf en push hem naar de server
             if site.__contains__("www."):
                 domain = site.split("www.")
             else:
@@ -40,43 +42,53 @@ def scraper(site, user, userloc, logpath, hrefCheck):
             download_file(site, filename)
             hex_dig = get_hashes(filename)
             Scp.run(filename)
+            #Zorg dat de logging weggeschreven word
             Logging.log(user, userloc, when, what, why, result, hex_dig, logpath)
             return(filename, hex_dig)
 
         else:
-            print site
+            #Download de pagina
             page = requests.get(site)
-            if page.status_code == 200:
-                soup = BeautifulSoup(page.content, 'html.parser')
-                for x, y in enumerate(soup.find_all('p')):
-                    text = text + soup.find_all('p')[x].get_text()
-                for x, y in enumerate(soup.find_all('a')):
-                    href.append(soup.find_all('a')[x].get_text())
 
-                unitext = unidecode(text)
-                if site.__contains__("www."):
-                    domain = site.split("www.")
-                else:
-                    domain = site.split("://")
-                tld = str(domain[1])
-                tld = tld.replace("/", "-")
-                f = open(str("sites/" + tld + ".txt"), "w+")
-                f.write(unitext)
-                f.close()
-                filename = "sites/" + tld + ".txt"
-                hex_dig = get_hashes(filename)
-                Scp.run(filename)
-                Logging.log(user, userloc, when, what, why, result, hex_dig, logpath)
-                if hrefCheck == 0:
-                    hrefParser(href, str(domain[1]))
-                print hex_dig
-                return
+            soup = BeautifulSoup(page.content, 'html.parser')
+
+            # Extract alle P tags
+            for x, y in enumerate(soup.find_all('p')):
+                text = text + soup.find_all('p')[x].get_text()
+            # Extract alle href's
+            for a in soup.find_all('a', href=True):
+                href.append(a['href'])
+
+            # zet de tekst om in unicode.
+            unitext = unidecode(text)
+            if site.__contains__("www."):
+                domain = site.split("www.")
+            else:
+                domain = site.split("://")
+
+            # Schrijf de text weg in een bestand
+            tld = str(domain[1])
+            tld = tld.replace("/", "-")
+            f = open(str("sites/" + tld + ".txt"), "w+")
+            f.write(unitext)
+            f.close()
+            filename = "sites/" + tld + ".txt"
+            hex_dig = get_hashes(filename)
+            Scp.run(filename)
+            Logging.log(user, userloc, when, what, why, result, hex_dig, logpath)
+
+            # Check of het de eerste scan is
+            if hrefCheck == '0':
+                hrefParser.parser(href, str(domain[1]))
+            print hex_dig
+            return
 
     except ExceptionHandling.WrongStatusCode as e:
         Logging.error_log("Menu", e.message)
         print "\033[93m" + e.message + "\033[0m"
         pass
 
+# Download functie voor pdf's
 def download_file(download_url, filename):
     web_file = urllib.urlopen(download_url)
     local_file = open(filename, 'w')
@@ -84,6 +96,7 @@ def download_file(download_url, filename):
     web_file.close()
     local_file.close()
 
+# Vergaar pdf informatie
 def get_info(path):
     with open(path, 'rb') as f:
         pdf = PdfFileReader(f)
