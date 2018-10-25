@@ -7,8 +7,9 @@
 
 import ExceptionHandling
 import Logging
-import Scraper
-import Buster
+from Scraper import Scrapert
+from Buster import Buster
+
 
 class Menu:
     """
@@ -18,11 +19,13 @@ class Menu:
     def __init__(self):
         """
         This is the constructor of the CLI menu
+        :param username: Name of the current user
+        :param userloc: location of the user
+        :param logpath: Path to the logfile
         """
         self.username = "dario"
-        self.userloc = "huis"
+        self.userloc = "school"
         self.logpath = "log1.csv"
-
 
     def show_menu(self):
         """
@@ -43,7 +46,7 @@ class Menu:
 
         print ""
         try:
-            optionnumber = raw_input("Choose an option number: ")
+            optionnumber = raw_input("Choose an option number: \n")
             # user input handling
             if optionnumber.isdigit() and int(optionnumber) > 0 and int(optionnumber) < 5:
                 return int(optionnumber)
@@ -59,25 +62,29 @@ class Menu:
         :return: nothing
         """
 
-        # 1. Select URL
+        # 1. Scrapes page that is given.
         if option == 1:
-            website = raw_input("Voer hier de site in die U wil scrapen:")
-            Scraper.scraper(website, self.username, self.userloc, self.logpath, '0')
+            website = raw_input("Voer hier de site in die U wil scrapen:\n")
+            scraper = Scrapert()
+            scraper.scraper(website, self.username, self.userloc, self.logpath, '0')
 
-        # Voer text bestand in met de output van gobuster
+        # Run the option to extract collected links with gobuster.
         if option == 2:
-            txtfile = raw_input("Voer hier de locatie van het .txt bestand in.")
-            Buster.readfile(txtfile, self.username, self.userloc, self.logpath, '0')
+            txtfile = raw_input("Voer hier de locatie van het .txt bestand in.\n")
+            buster = Buster()
+            buster.readfile(txtfile, self.username, self.userloc, self.logpath, '0')
 
-        # Voer text bestand in met aangemaakte href bestand.
+        # Run the option to extract collected links to pages on the web server.
         if option == 3:
             print "Het bestand moet de volgende naamgeving hebben: Domeinnaam  - tld  - iets .txt voorbeeld nu.nl.test.txt"
-            txtfile = raw_input("Voer hier de locatie van het .txt bestand in.")
-            Buster.readfile(txtfile, self.username, self.userloc, self.logpath, '1')
+            txtfile = raw_input("Voer hier de locatie van het .txt bestand in.\n")
+            buster = Buster()
+            buster.readfile(txtfile, self.username, self.userloc, self.logpath, '1')
 
-        # Verlaat het programma
+        # Exit the code.
         if option == 4:
             exit()
+
 
 def __main__():
     """
