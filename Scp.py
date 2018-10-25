@@ -18,10 +18,10 @@ class Scp:
     port = 22
 
     # De user moet hier zelf nog ingevuld worden hardcoded is het makkelijkste
-    user = "ipfit6"
+    user = ""
 
     # Hier moet zelf het password nog ingevuld worden
-    password = "Groep2"
+    password = ""
 
 
     def createSSHClient(self):
