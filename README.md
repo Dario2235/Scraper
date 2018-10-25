@@ -20,7 +20,7 @@ Run option 3:
 run gobuster and transfer the output to a txt file. format of the name needs to be domain name.topleveldomain.txt "google.nl.txt".
 
 Run option 4:
-run the output file of option 1. name needs to be domain name. topleveldoemain.txt.txt. "google.nl.txt.txt"
+run the output file of option 1. name needs to be domain name. topleveldomain.txt.txt. "google.nl.txt.txt"
 
 
 requirements:
