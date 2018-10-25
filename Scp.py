@@ -49,5 +49,5 @@ class Scp:
         ssh = Scp.createSSHClient(self)
         scp = SCPClient(ssh.get_transport())
         print filename
-        scp.put(filename, 'test')
+        scp.put(filename, 'files')
         return
