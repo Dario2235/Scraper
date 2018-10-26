@@ -5,8 +5,8 @@
 # Author: Dario
 #
 
-import ExceptionHandling
-import Logging
+from ExceptionHandling import WrongStatusCode
+from Logging import Logging
 from Scraper import Scrapert
 from Buster import Buster
 
@@ -23,9 +23,9 @@ class Menu:
         :param userloc: location of the user
         :param logpath: Path to the logfile
         """
-        self.username = "dario"
-        self.userloc = "school"
-        self.logpath = "log1.csv"
+        self.username = "Dario"
+        self.userloc = "Thuis"
+        self.logpath = "log.csv"
 
     def show_menu(self):
         """

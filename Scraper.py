@@ -41,7 +41,7 @@ class Scrapert:
         why = "Extract text from the site for research."
         result = str(site + " gescraped. .txt file has been made with the content of the original site.")
         if str(site).endswith("\n"):
-            site = site[:-2]
+            site = site[:-1]
         try:
             print site
             scp = Scp()

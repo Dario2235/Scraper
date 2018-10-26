@@ -19,9 +19,11 @@ class hrefParser:
         :param site: original domain name.
         """
         sites = []
+        print site + "              site test"
         # loop through given array
         for x, y in enumerate(array):
             if y.startswith("/"):
+                print " test"
                 if site.endswith("/"):
                     site = site[:-1]
                 url = site + y
@@ -30,11 +32,18 @@ class hrefParser:
                 else:
                     sites.append(url)
                     print " append url    " + y
+            print y
+            if y.__contains__("http") and y.__contains__(site) and not sites.__contains__(y):
+                print " append url    " + y
+                sites.append(y)
 
         # write founded links in file.
         site = site.replace("/","-") + ".href.txt"
         f = open(site, "w+")
         for x, y in enumerate(sites):
-            f.write("http://" + y + "\n")
+            if y.__contains__("http"):
+                f.write(y + "\n")
+            else:
+                f.write("http://" + y + "\n")
         f.close()
         print "Bestand " + site + " is aangemaakt."
