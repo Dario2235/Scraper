@@ -2,7 +2,7 @@
 #
 #
 #
-# Author: Dario Weeink
+# Author: Dario
 #
 
 
@@ -18,21 +18,21 @@ class hrefParser:
         :param array: array with href links.
         :param site: original domain name.
         """
+
         sites = []
-        print site + "              site test"
         # loop through given array
+
         for x, y in enumerate(array):
             if y.startswith("/"):
-                print " test"
                 if site.endswith("/"):
                     site = site[:-1]
                 url = site + y
-                if url in sites:
-                    break
+                if url in sites or url.__contains__("#") or y == "/":
+                    continue
                 else:
                     sites.append(url)
                     print " append url    " + y
-            print y
+
             if y.__contains__("http") and y.__contains__(site) and not sites.__contains__(y):
                 print " append url    " + y
                 sites.append(y)
@@ -46,4 +46,5 @@ class hrefParser:
             else:
                 f.write("http://" + y + "\n")
         f.close()
+        print ""
         print "Bestand " + site + " is aangemaakt."

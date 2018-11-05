@@ -2,7 +2,7 @@
 #
 #
 #
-# Author: Dario Weeink
+# Author: Dario
 #
 
 import time
@@ -12,8 +12,8 @@ import hashlib
 import ExceptionHandling
 from Logging import Logging
 from Scp import Scp
+from Rosette import Rosette
 from hrefParser import hrefParser
-from PyPDF2 import PdfFileReader
 import urllib
 from unidecode import unidecode
 
@@ -24,7 +24,7 @@ class Scrapert:
     This class contains the CLI menu and user interaction handling of the program
     """
 
-    def scraper(self, site, user, userloc, logpath, hrefCheck):
+    def scraper(self, site, user, userloc, logpath, hrefCheck, entitie):
         """
         This function scrapes the pages.
         :param site: Url from site
@@ -32,7 +32,8 @@ class Scrapert:
         :param userloc: Location of the current user
         :param logpath: Path of the log file.
         :param hrefCheck: Check if its the first time in the scraper.
-        :return: nothing
+        :param entitie: Check if the entities need to be extracted.
+        :return: The filename and the SHA 256 value.
         """
         text = ""
         href = []
@@ -49,7 +50,7 @@ class Scrapert:
             HrefParser = hrefParser()
             if site.__contains__(".pdf"):
 
-                #Download pdf and push it to the server
+                # Download pdf and push it to the server
                 if site.__contains__("www."):
                     domain = site.split("www.")
                 else:
@@ -60,7 +61,6 @@ class Scrapert:
                 # scraper = Scraper.scraper()
                 self.download_file(site, filename)
                 hex_dig = self.get_hashes(filename)
-
                 scp.run(filename)
                 # Write logging to .csv file.
 
@@ -68,9 +68,9 @@ class Scrapert:
                 return(filename, hex_dig)
 
             else:
-                #Download the page
-                page = requests.get(site)
 
+                # Download the page
+                page = requests.get(site)
                 soup = BeautifulSoup(page.content, 'html.parser')
 
                 # Extract all P tags
@@ -88,20 +88,18 @@ class Scrapert:
                     domain = site.split("://")
 
                 # Write text to .txt file
-                tld = str(domain[1])
-                tld = tld.replace("/", "-")
-                f = open(str("sites/" + tld + ".txt"), "w+")
-                f.write(unitext)
-                f.close()
-                filename = "sites/" + tld + ".txt"
+                filename = self.get_filname(domain, unitext)
                 hex_dig = self.get_hashes(filename)
+                if entitie:
+                    self.get_entities(filename, domain)
                 scp.run(filename)
                 logging.log(user, userloc, when, what, why, result, hex_dig, logpath)
 
                 # Check if its the first scan.
-                if hrefCheck == '0':
+                if hrefCheck == True and entitie == False:
                     HrefParser.parser(href, str(domain[1]))
-                print hex_dig
+                print "SHA 256 : " + hex_dig + "\n"
+
                 return
 
         except ExceptionHandling.WrongStatusCode as e:
@@ -123,19 +121,20 @@ class Scrapert:
         web_file.close()
         local_file.close()
 
-    # Get pfd information
-    def get_info(self, path):
+    def get_filname(self, domain, unitext):
         """
-        Get pdf information
-        :param path: The path to the pdf file.
-        :return: Nothing
+        Write text and get filename
+        :param domain: toplevel domain
+        :param unitext: Text to write in the file.
+        :return: The file name that is created.
         """
-        with open(path, 'rb') as f:
-            pdf = PdfFileReader(f)
-            info = pdf.getDocumentInfo()
-            number_of_pages = pdf.getNumPages()
-            print info
-            print number_of_pages
+        tld = str(domain[1])
+        tld = tld.replace("/", "-")
+        f = open(str("sites/" + tld + ".txt"), "w+")
+        f.write(unitext)
+        f.close()
+        return ("sites/" + tld + ".txt")
+
 
     def get_hashes(self, file):
         """
@@ -150,3 +149,14 @@ class Scrapert:
                 sha256.update(block)
         hash = sha256.hexdigest()
         return hash
+
+    def get_entities(self, filename, domain):
+        """
+        Get enitities in the file.
+        :param filename: name of the file
+        :param domain: The top level domain.
+        :return: nothing
+        """
+        rosette = Rosette()
+        entities = rosette.main(filename)
+        self.get_filname(domain, entities)

@@ -2,7 +2,7 @@
 #
 #
 #
-# Author: Dario Weeink
+# Author: Dario
 #
 
 from scp import SCPClient
@@ -49,5 +49,5 @@ class Scp:
         ssh = Scp.createSSHClient(self)
         scp = SCPClient(ssh.get_transport())
         print filename
-        scp.put(filename, 'files')
+        scp.put(filename, 'test')
         return
